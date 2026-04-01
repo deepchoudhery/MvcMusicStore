@@ -1,19 +1,17 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - MUSIC STORE</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="~/Content/bootstrap.css" />
+    <link rel="stylesheet" href="~/Content/Site.css" />
 </head>
 <body>
     <div id="throbber" style="display:none; min-height:120px;"></div>
     <div id="noty-holder"></div>
     <div id="wrapper">
-        <!-- Navigation -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
@@ -22,48 +20,40 @@
                 </button>
                 <div class="navbar-brand">
                     <a href="@Url.Action("Index", "Home")">
-                        <img alt="MUSIC STORE" src="/content/Images/logo.png" /> <span>MUSIC STORE</span>
-                    </a>                    
+                        <img alt="MUSIC STORE" src="/Content/Images/logo.png" /> <span>MUSIC STORE</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Top Menu Items -->
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-left top-nav">
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
                 <ul class="nav navbar-right top-nav">
-                    <li>@{Html.RenderAction("CartSummary", "ShoppingCart");}</li>
-                   
-                    @if (User.Identity.IsAuthenticated)
+                    <li>@await Component.InvokeAsync("CartSummary")</li>
+
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
                     {
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-fw fa-user"></i> Hello, @User.Identity.Name
+                                Hello, @User.Identity.Name
                                 <b class="fa fa-angle-down"></b>
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="@Url.Action("ChangePassword", "Account")">
-                                        <i class="fa fa-fw fa-cog"></i> Change Password
-                                    </a>
+                                    <a href="@Url.Action("ChangePassword", "Account")">Change Password</a>
                                 </li>
                                 @if (User.IsInRole("Administrator"))
                                 {
                                     <li class="divider"></li>
                                     <li>
-                                        <a href="@Url.Action("Index", "StoreManager")">
-                                            <i class="fa fa-fw fa-cogs"></i> Manage Store
-                                        </a>
+                                        <a href="@Url.Action("Index", "StoreManager")">Manage Store</a>
                                     </li>
                                 }
-
                                 <li class="divider"></li>
                                 <li>
-                                    <a href="@Url.Action("LogOff", "Account")">
-                                        <i class="fa fa-fw fa-power-off"></i> Logout
-                                    </a>
+                                    <a href="@Url.Action("LogOff", "Account")">Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -71,22 +61,15 @@
                     else
                     {
                         <li>
-                            <a href="@Url.Action("LogOn", "Account")">
-                                <i class="fa fa-fw fa-sign-in"></i> Login
-                            </a>
+                            <a href="@Url.Action("LogOn", "Account")">Login</a>
                         </li>
                     }
-
-
-
-
                 </ul>
-            </div> <!-- /.navbar-collapse -->
+            </div>
 
-            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
-                <ul class="nav navbar-nav side-nav">                    
-                    @{Html.RenderAction("GenreMenu", "Store");}
+                <ul class="nav navbar-nav side-nav">
+                    @await Component.InvokeAsync("GenreMenu")
                 </ul>
             </div>
         </nav>
@@ -100,12 +83,11 @@
                     <p>&copy; @DateTime.Now.Year - MUSIC STORE</p>
                 </footer>
             </div>
+        </div>
+    </div>
 
-        </div><!-- /#page-wrapper -->
-    </div><!-- /#wrapper -->
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)     
-</body> 
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
 </html>

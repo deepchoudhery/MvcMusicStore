@@ -1,18 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data.Entity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MvcMusicStore.Models
 {
-    public class SampleData : DropCreateDatabaseIfModelChanges<MusicStoreEntities>
+    public static class SampleData
     {
-        protected override void Seed(MusicStoreEntities dbContext)
+        public static async Task SeedAsync(IServiceProvider services)
         {
+            var dbContext = services.GetRequiredService<MusicStoreEntities>();
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            await dbContext.Database.EnsureCreatedAsync();
+
+            if (dbContext.Genres.Any())
+                return;
+
             var genres = new List<Genre>
-            {
-                new Genre { Name = "Rock" },
+            {new Genre { Name = "Rock" },
                 new Genre { Name = "Jazz" },
                 new Genre { Name = "Metal" },
                 new Genre { Name = "Alternative" },
@@ -25,8 +29,7 @@ namespace MvcMusicStore.Models
             };
 
             var artists = new List<Artist>
-            {
-                new Artist { Name = "Aaron Copland & London Symphony Orchestra" },
+            {new Artist { Name = "Aaron Copland & London Symphony Orchestra" },
                 new Artist { Name = "Aaron Goldberg" },
                 new Artist { Name = "AC/DC" },
                 new Artist { Name = "Accept" },
@@ -178,8 +181,7 @@ namespace MvcMusicStore.Models
             };
 
             new List<Album>
-            {
-                new Album { Title = "A Copland Celebration, Vol. I", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Aaron Copland & London Symphony Orchestra"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
+            {new Album { Title = "A Copland Celebration, Vol. I", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Aaron Copland & London Symphony Orchestra"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Worlds", Genre = genres.Single(g => g.Name == "Jazz"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Aaron Goldberg"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "For Those About To Rock We Salute You", Genre = genres.Single(g => g.Name == "Rock"), Price = 8.99M, Artist = artists.Single(a => a.Name == "AC/DC"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Let There Be Rock", Genre = genres.Single(g => g.Name == "Rock"), Price = 8.99M, Artist = artists.Single(a => a.Name == "AC/DC"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
@@ -426,6 +428,16 @@ namespace MvcMusicStore.Models
                 new Album { Title = "Bach: The Cello Suites", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yo-Yo Ma"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Ao Vivo [IMPORT]", Genre = genres.Single(g => g.Name == "Latin"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Zeca Pagodinho"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
             }.ForEach(a => dbContext.Albums.Add(a));
+
+            dbContext.Genres.AddRange(genres);
+            dbContext.Artists.AddRange(artists);
+            await dbContext.SaveChangesAsync();
+
+            // Seed administrator role and user
+            if (!await roleManager.RoleExistsAsync("Administrator"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Administrator"));
+            }
         }
     }
 }

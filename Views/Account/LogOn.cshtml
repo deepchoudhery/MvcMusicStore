@@ -1,4 +1,4 @@
-﻿@model MVCUserRoles.Models.LogOnModel
+@model MvcMusicStore.Models.LogOnModel
 
 @{
     ViewBag.Title = "Log On";
@@ -12,6 +12,7 @@
 @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
 
 @using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
     <div>
         <fieldset>
             <legend>Account Information</legend>
