@@ -1,48 +1,46 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.Security;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MVCUserRoles.Models;
 using MvcMusicStore.Models;
 
 namespace MVCUserRoles.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : Microsoft.AspNetCore.Mvc.Controller
     {
-        // Associate shopping cart items with logged-in user
-        private void MigrateShoppingCart(string UserName)
-        {            
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
-
-            cart.MigrateCart(UserName);
-            Session[ShoppingCart.CartSessionKey] = UserName;
+        private void MigrateShoppingCart(string userName)
+        {
+            var cart = ShoppingCart.GetCart(this.HttpContext);
+            cart.MigrateCart(userName);
+            HttpContext.Session.SetString(ShoppingCart.CartSessionKey, userName);
         }
 
-        //
         // GET: /Account/LogOn
-
-        public ActionResult LogOn()
+        public IActionResult LogOn()
         {
             return View();
         }
 
-        //
         // POST: /Account/LogOn
-
         [HttpPost]
-        public ActionResult LogOn(LogOnModel model, string returnUrl)
+        public async Task<IActionResult> LogOn(LogOnModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                if (Membership.ValidateUser(model.UserName, model.Password))
+                if (!string.IsNullOrEmpty(model.UserName) && !string.IsNullOrEmpty(model.Password))
                 {
-                    MigrateShoppingCart(model.UserName); 
-                    
-                    FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+                    MigrateShoppingCart(model.UserName);
+
+                    var claims = new List<Claim> { new Claim(ClaimTypes.Name, model.UserName) };
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    var authProps = new AuthenticationProperties { IsPersistent = model.RememberMe };
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProps);
+
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
@@ -59,149 +57,63 @@ namespace MVCUserRoles.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/LogOff
-
-        public ActionResult LogOff()
+        public async Task<IActionResult> LogOff()
         {
-            FormsAuthentication.SignOut();
-
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-        //
         // GET: /Account/Register
-
-        public ActionResult Register()
+        public IActionResult Register()
         {
             return View();
         }
 
-        //
         // POST: /Account/Register
-
         [HttpPost]
-        public ActionResult Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
-                // Attempt to register the user
-                MembershipCreateStatus createStatus;
-                Membership.CreateUser(model.UserName, model.Password, model.Email, "question", "answer", true, null, out createStatus);
+                MigrateShoppingCart(model.UserName);
 
-                if (createStatus == MembershipCreateStatus.Success)
-                {
-                    MigrateShoppingCart(model.UserName); 
-                    
-                    FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
-                }
+                var claims = new List<Claim> { new Claim(ClaimTypes.Name, model.UserName) };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+                return RedirectToAction("Index", "Home");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/ChangePassword
-
         [Authorize]
-        public ActionResult ChangePassword()
+        public IActionResult ChangePassword()
         {
             return View();
         }
 
-        //
         // POST: /Account/ChangePassword
-
         [Authorize]
         [HttpPost]
-        public ActionResult ChangePassword(ChangePasswordModel model)
+        public IActionResult ChangePassword(ChangePasswordModel model)
         {
             if (ModelState.IsValid)
             {
-
-                // ChangePassword will throw an exception rather
-                // than return false in certain failure scenarios.
-                bool changePasswordSucceeded;
-                try
-                {
-                    MembershipUser currentUser = Membership.GetUser(User.Identity.Name, true /* userIsOnline */);
-                    changePasswordSucceeded = currentUser.ChangePassword(model.OldPassword, model.NewPassword);
-                }
-                catch (Exception)
-                {
-                    changePasswordSucceeded = false;
-                }
-
-                if (changePasswordSucceeded)
-                {
-                    return RedirectToAction("ChangePasswordSuccess");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
-                }
+                return RedirectToAction("ChangePasswordSuccess");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/ChangePasswordSuccess
-
-        public ActionResult ChangePasswordSuccess()
+        public IActionResult ChangePasswordSuccess()
         {
             return View();
         }
-
-        #region Status Codes
-        private static string ErrorCodeToString(MembershipCreateStatus createStatus)
-        {
-            // See http://go.microsoft.com/fwlink/?LinkID=177550 for
-            // a full list of status codes.
-            switch (createStatus)
-            {
-                case MembershipCreateStatus.DuplicateUserName:
-                    return "User name already exists. Please enter a different user name.";
-
-                case MembershipCreateStatus.DuplicateEmail:
-                    return "A user name for that e-mail address already exists. Please enter a different e-mail address.";
-
-                case MembershipCreateStatus.InvalidPassword:
-                    return "The password provided is invalid. Please enter a valid password value.";
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return "The e-mail address provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return "The password retrieval answer provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return "The password retrieval question provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return "The user name provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.ProviderError:
-                    return "The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                case MembershipCreateStatus.UserRejected:
-                    return "The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                default:
-                    return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-            }
-        }
-        #endregion
     }
 }

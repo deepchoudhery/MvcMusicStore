@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace MvcMusicStore.Models
 {
-    // Bind Exclude is Ok here, since you will not edit in the order,
-    // by using somthing like "???.State = EntityState.Modified;"
-    [Bind(Exclude = "OrderId")] 
+    // OrderId is excluded from binding to prevent overposting
     public partial class Order
     {
         [ScaffoldColumn(false)]
