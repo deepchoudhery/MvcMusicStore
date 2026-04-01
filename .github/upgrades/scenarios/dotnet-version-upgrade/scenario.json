@@ -3,13 +3,14 @@
   "operationId": "4fc4178e-3ebe-4b32-9f06-a37830910fb8",
   "description": "Upgrade .NET projects to newer .NET versions",
   "startTime": "2026-04-01T00:26:32.5106832Z",
-  "lastUpdateTime": "2026-04-01T00:32:27.5982043Z",
+  "lastUpdateTime": "2026-04-01T00:50:28.4231477Z",
   "properties": {
     "UpgradeTargetFramework": "net10.0",
     "taskStates": {
       "01-prerequisites": "Completed",
       "02-sdk-conversion": "Completed",
-      "03-upgrade-mvcmusicstore": "InProgress"
+      "03-upgrade-mvcmusicstore": "Completed",
+      "04-final-validation": "Completed"
     }
   },
   "folderPath": ""
