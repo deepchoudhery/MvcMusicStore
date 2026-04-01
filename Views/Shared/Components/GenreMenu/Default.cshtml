@@ -1,0 +1,9 @@
+@model IEnumerable<MvcMusicStore.Models.Genre>
+@foreach (var genre in Model)
+{
+    <li>
+        <a href="@Url.Action("Browse", "Store", new { Genre = genre.Name })">
+            @genre.Name
+        </a>
+    </li>
+}
