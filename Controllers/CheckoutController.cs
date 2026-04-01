@@ -1,6 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MvcMusicStore.Models;
 
 namespace MvcMusicStore.Controllers
@@ -21,10 +21,10 @@ namespace MvcMusicStore.Controllers
         //
         // POST: /Checkout/AddressAndPayment
         [HttpPost]
-        public ActionResult AddressAndPayment(FormCollection values)
+        public async Task<ActionResult> AddressAndPayment(IFormCollection values)
         {
             var order = new Order();
-            TryUpdateModel(order);
+            await TryUpdateModelAsync(order);
 
             try
             {

@@ -1,11 +1,6 @@
-﻿using MvcMusicStore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using MvcMusicStore.Models;
 using System.Data.Entity;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcMusicStore.Controllers
 {   
@@ -38,7 +33,7 @@ namespace MvcMusicStore.Controllers
             
             if (String.IsNullOrEmpty(genre))
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
 
             // Retrieve Genre and its Associated Albums from database (Query Result Shaping Feature)
@@ -46,7 +41,7 @@ namespace MvcMusicStore.Controllers
             var genreModel = dbContext.Genres.Include(g => g.Albums).Single(g => g.Name == genre);
             if (genreModel == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(genreModel);
 
@@ -58,22 +53,22 @@ namespace MvcMusicStore.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
 
             //var album = dbContext.Albums.Find(id);
             var album = dbContext.Albums.Include(a => a.Artist).Include(a => a.Genre).Single(a => a.AlbumId == id);
             if (album == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(album);
+
         }
 
         //
         // GET: /Store/GenreMenu
 
-        [ChildActionOnly]
         public ActionResult GenreMenu()
         {
             var genres = dbContext.Genres.ToList();

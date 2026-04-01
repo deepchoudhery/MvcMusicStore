@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MvcMusicStore.Models;
 using MvcMusicStore.ViewModels;
 
@@ -67,7 +66,7 @@ namespace MvcMusicStore.Controllers
             // Display the confirmation message
             var results = new ShoppingCartRemoveViewModel
             {
-                Message = Server.HtmlEncode(albumName) +
+                Message = System.Net.WebUtility.HtmlEncode(albumName) +
                     " has been removed from your shopping cart.",
                 CartTotal = cart.GetTotal(),
                 CartCount = cart.GetCount(),
@@ -81,7 +80,6 @@ namespace MvcMusicStore.Controllers
         //
         // GET: /ShoppingCart/CartSummary
 
-        [ChildActionOnly]
         public ActionResult CartSummary()
         {
             //var cart = ShoppingCart.GetCart(this.HttpContext);

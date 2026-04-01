@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcMusicStore.Models;
 
 namespace MvcMusicStore.Controllers
@@ -28,14 +25,14 @@ namespace MvcMusicStore.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
 
             //Album album = dbContext.Albums.Find(id);
             Album album = dbContext.Albums.Include(a => a.Artist).Include(a => a.Genre).Single(a => a.AlbumId == id);
             if (album == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(album);            
         }
@@ -53,8 +50,7 @@ namespace MvcMusicStore.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album) // Model Binding capabilities built into ASP.NET MVC
-        //public ActionResult Create(Album album)
+        public ActionResult Create([Bind("AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album)
         {
             if (ModelState.IsValid) // to validate rules in modeles
             {
@@ -74,12 +70,12 @@ namespace MvcMusicStore.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             Album album = dbContext.Albums.Find(id);
             if (album == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             ViewBag.ArtistId = new SelectList(dbContext.Artists, "ArtistId", "Name", album.ArtistId);
             ViewBag.GenreId = new SelectList(dbContext.Genres, "GenreId", "Name", album.GenreId);
@@ -91,7 +87,7 @@ namespace MvcMusicStore.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album)
+        public ActionResult Edit([Bind("AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album)
         {
             if (ModelState.IsValid)
             {
@@ -110,13 +106,13 @@ namespace MvcMusicStore.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             //Album album = dbContext.Albums.Find(id);
             Album album = dbContext.Albums.Include(a => a.Artist).Include(a => a.Genre).Single(a => a.AlbumId == id);
             if (album == null)
             {
-                return HttpNotFound();
+                return NotFound();
             }
             return View(album);            
         }
@@ -125,7 +121,7 @@ namespace MvcMusicStore.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         //public ActionResult DeleteConfirmed(int id)
-        public ActionResult DeleteConfirmed([Bind(Include = "AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album)
+        public ActionResult DeleteConfirmed([Bind("AlbumId,GenreId,ArtistId,Title,Price,AlbumArtUrl")] Album album)
         {
             //Album album = dbContext.Albums.Find(id);
             //dbContext.Albums.Remove(album);
