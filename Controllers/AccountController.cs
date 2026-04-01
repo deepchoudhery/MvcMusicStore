@@ -1,48 +1,69 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.Security;
-using MVCUserRoles.Models;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using MvcMusicStore.Models;
 
-namespace MVCUserRoles.Controllers
+namespace MvcMusicStore.Controllers
 {
     public class AccountController : Controller
     {
-        // Associate shopping cart items with logged-in user
-        private void MigrateShoppingCart(string UserName)
-        {            
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
+        private MusicStoreEntities dbContext = new MusicStoreEntities();
 
-            cart.MigrateCart(UserName);
-            Session[ShoppingCart.CartSessionKey] = UserName;
+        private void MigrateShoppingCart(string userName)
+        {
+            var cart = ShoppingCart.GetCart(HttpContext);
+            cart.MigrateCart(userName);
+            HttpContext.Session.SetString(ShoppingCart.CartSessionKey, userName);
         }
 
-        //
         // GET: /Account/LogOn
-
         public ActionResult LogOn()
         {
             return View();
         }
 
-        //
         // POST: /Account/LogOn
-
         [HttpPost]
-        public ActionResult LogOn(LogOnModel model, string returnUrl)
+        public async Task<ActionResult> LogOn(LogOnModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
-                if (Membership.ValidateUser(model.UserName, model.Password))
+                // Validate user against the database
+                var user = dbContext.Users.SingleOrDefault(u => u.UserName == model.UserName);
+                if (user != null && VerifyPassword(model.Password, user.Password))
                 {
-                    MigrateShoppingCart(model.UserName); 
-                    
-                    FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+                    MigrateShoppingCart(model.UserName);
+
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, model.UserName)
+                    };
+
+                    // Add role claims
+                    var userRoles = dbContext.UserRoles
+                        .Where(ur => ur.UserId == user.UserId)
+                        .Select(ur => ur.Role.RoleName)
+                        .ToList();
+                    foreach (var role in userRoles)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role));
+                    }
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        principal,
+                        new AuthenticationProperties { IsPersistent = model.RememberMe });
+
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
@@ -59,83 +80,97 @@ namespace MVCUserRoles.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/LogOff
-
-        public ActionResult LogOff()
+        public async Task<ActionResult> LogOff()
         {
-            FormsAuthentication.SignOut();
-
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-        //
         // GET: /Account/Register
-
         public ActionResult Register()
         {
             return View();
         }
 
-        //
         // POST: /Account/Register
-
         [HttpPost]
-        public ActionResult Register(RegisterModel model)
+        public async Task<ActionResult> Register(RegisterModel model)
         {
             if (ModelState.IsValid)
             {
-                // Attempt to register the user
-                MembershipCreateStatus createStatus;
-                Membership.CreateUser(model.UserName, model.Password, model.Email, "question", "answer", true, null, out createStatus);
+                if (model.Password.Length < 6)
+                {
+                    ModelState.AddModelError("", "The password provided is invalid. Password must be at least 6 characters.");
+                    return View(model);
+                }
 
-                if (createStatus == MembershipCreateStatus.Success)
+                if (dbContext.Users.Any(u => u.UserName == model.UserName))
                 {
-                    MigrateShoppingCart(model.UserName); 
-                    
-                    FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
-                    return RedirectToAction("Index", "Home");
+                    ModelState.AddModelError("", "User name already exists. Please enter a different user name.");
+                    return View(model);
                 }
-                else
+
+                var newUser = new MusicStoreUser
                 {
-                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
-                }
+                    UserId = Guid.NewGuid(),
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    Password = HashPassword(model.Password),
+                    CreateDate = DateTime.Now,
+                    IsApproved = true
+                };
+                dbContext.Users.Add(newUser);
+                dbContext.SaveChanges();
+
+                MigrateShoppingCart(model.UserName);
+
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, model.UserName)
+                };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                return RedirectToAction("Index", "Home");
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/ChangePassword
-
         [Authorize]
         public ActionResult ChangePassword()
         {
             return View();
         }
 
-        //
         // POST: /Account/ChangePassword
-
         [Authorize]
         [HttpPost]
         public ActionResult ChangePassword(ChangePasswordModel model)
         {
             if (ModelState.IsValid)
             {
-
-                // ChangePassword will throw an exception rather
-                // than return false in certain failure scenarios.
                 bool changePasswordSucceeded;
                 try
                 {
-                    MembershipUser currentUser = Membership.GetUser(User.Identity.Name, true /* userIsOnline */);
-                    changePasswordSucceeded = currentUser.ChangePassword(model.OldPassword, model.NewPassword);
+                    var user = dbContext.Users.SingleOrDefault(u => u.UserName == User.Identity.Name);
+                    if (user != null && VerifyPassword(model.OldPassword, user.Password))
+                    {
+                        user.Password = HashPassword(model.NewPassword);
+                        dbContext.SaveChanges();
+                        changePasswordSucceeded = true;
+                    }
+                    else
+                    {
+                        changePasswordSucceeded = false;
+                    }
                 }
                 catch (Exception)
                 {
@@ -152,56 +187,26 @@ namespace MVCUserRoles.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 
-        //
         // GET: /Account/ChangePasswordSuccess
-
         public ActionResult ChangePasswordSuccess()
         {
             return View();
         }
 
-        #region Status Codes
-        private static string ErrorCodeToString(MembershipCreateStatus createStatus)
+        private static string HashPassword(string password)
         {
-            // See http://go.microsoft.com/fwlink/?LinkID=177550 for
-            // a full list of status codes.
-            switch (createStatus)
-            {
-                case MembershipCreateStatus.DuplicateUserName:
-                    return "User name already exists. Please enter a different user name.";
-
-                case MembershipCreateStatus.DuplicateEmail:
-                    return "A user name for that e-mail address already exists. Please enter a different e-mail address.";
-
-                case MembershipCreateStatus.InvalidPassword:
-                    return "The password provided is invalid. Please enter a valid password value.";
-
-                case MembershipCreateStatus.InvalidEmail:
-                    return "The e-mail address provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidAnswer:
-                    return "The password retrieval answer provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidQuestion:
-                    return "The password retrieval question provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.InvalidUserName:
-                    return "The user name provided is invalid. Please check the value and try again.";
-
-                case MembershipCreateStatus.ProviderError:
-                    return "The authentication provider returned an error. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                case MembershipCreateStatus.UserRejected:
-                    return "The user creation request has been canceled. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-
-                default:
-                    return "An unknown error occurred. Please verify your entry and try again. If the problem persists, please contact your system administrator.";
-            }
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(password);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
-        #endregion
+
+        private static bool VerifyPassword(string plaintext, string storedHash)
+        {
+            return HashPassword(plaintext) == storedHash;
+        }
     }
 }

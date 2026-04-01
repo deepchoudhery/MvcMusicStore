@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcMusicStore.Models
 {
-    // Bind Exclude is Ok here, since you will not edit in the order,
-    // by using somthing like "???.State = EntityState.Modified;"
-    [Bind(Exclude = "OrderId")] 
+    [Bind("FirstName,LastName,Address,City,State,PostalCode,Country,Phone,Email")]
     public partial class Order
     {
         [ScaffoldColumn(false)]

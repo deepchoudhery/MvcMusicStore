@@ -1,24 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
+// This file is kept for reference only. ASP.NET Core does not use Global.asax.
+// All startup logic has been migrated to Program.cs.
 
-namespace MvcMusicStore
-{
-    public class MvcApplication : System.Web.HttpApplication
-    {
-        protected void Application_Start()
-        {
-            // To let EF to use file SampleData.cs to insert some sample data at drop/create Database
-            System.Data.Entity.Database.SetInitializer(new MvcMusicStore.Models.SampleData());
-
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
-        }
-    }
-}
