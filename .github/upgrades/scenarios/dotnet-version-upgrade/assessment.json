@@ -1,0 +1,661 @@
+{
+  "settings": {
+    "components": {
+      "code": true,
+      "binaries": false
+    },
+    "targetId": "net10.0",
+    "targetDisplayName": ".NETCoreApp,Version=v10.0"
+  },
+  "analysisStartTime": "2026-04-01T00:26:52.915524Z",
+  "analysisEndTime": "2026-04-01T00:26:55.5684992Z",
+  "privacyModeHelpUrl": "https://go.microsoft.com/fwlink/?linkid=2270980",
+  "stats": {
+    "summary": {
+      "projects": 1,
+      "issues": 9,
+      "incidents": 23,
+      "effort": 23
+    },
+    "charts": {
+      "severity": {
+        "Mandatory": 14,
+        "Optional": 6,
+        "Potential": 3,
+        "Information": 0
+      },
+      "category": {
+        "NuGet": 17,
+        "Project": 2,
+        "Feature": 4
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": "MvcMusicStore.csproj",
+      "startingProject": true,
+      "issues": 9,
+      "storyPoints": 23,
+      "properties": {
+        "appName": "MvcMusicStore",
+        "projectKind": "Wap",
+        "frameworks": [
+          "net472"
+        ],
+        "languages": [
+          "C#"
+        ],
+        "tools": [
+          "MSBuild"
+        ],
+        "isSdkStyle": false,
+        "numberOfFiles": 92,
+        "numberOfCodeFiles": 49,
+        "linesTotal": 45010,
+        "linesOfCode": 2689,
+        "totalApiScanned": 0,
+        "minLinesOfCodeToChange": 0,
+        "maxLinesOfCodeToChange": 0
+      },
+      "ruleInstances": [
+        {
+          "incidentId": "7ebd79a2-6523-4cd1-be82-7f7068c53e81",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Antlr, 3.5.0.2\n\nRecommendation:\n\nRemove Antlr, and replace with new package Antlr4 4.6.6",
+              "protected": "Antlr, 3.5.0.2\n\nRecommendation:\n\nRemove Antlr, and replace with new package Antlr4 4.6.6"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Antlr, 3.5.0.2\n\nRecommendation:\n\nRemove Antlr, and replace with new package Antlr4 4.6.6",
+            "protectedSnippet": "Antlr, 3.5.0.2\n\nRecommendation:\n\nRemove Antlr, and replace with new package Antlr4 4.6.6",
+            "label": "Antlr 3.5.0.2",
+            "properties": {
+              "PackageId": "Antlr",
+              "PackageVersion": "3.5.0.2",
+              "PackageNewVersion": null,
+              "PackageReplacements": "Replace with new package Antlr4=4.6.6"
+            }
+          }
+        },
+        {
+          "incidentId": "3d3cd9f0-9c56-43e9-a3cb-7175d7cde7a4",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "EntityFramework, 6.3.0\n\nRecommendation:\n\nRemove EntityFramework, and replace with new package EntityFramework 6.5.1",
+              "protected": "EntityFramework, 6.3.0\n\nRecommendation:\n\nRemove EntityFramework, and replace with new package EntityFramework 6.5.1"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "EntityFramework, 6.3.0\n\nRecommendation:\n\nRemove EntityFramework, and replace with new package EntityFramework 6.5.1",
+            "protectedSnippet": "EntityFramework, 6.3.0\n\nRecommendation:\n\nRemove EntityFramework, and replace with new package EntityFramework 6.5.1",
+            "label": "EntityFramework 6.3.0",
+            "properties": {
+              "PackageId": "EntityFramework",
+              "PackageVersion": "6.3.0",
+              "PackageNewVersion": "6.5.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "b16f7ada-2db2-4a86-8db7-d7a566c1be33",
+          "ruleId": "NuGet.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "EntityFramework.SqlServerCompact, 6.3.0\n\nRecommendation:\n\nEntityFramework.SqlServerCompact, 4.3.1",
+              "protected": "EntityFramework.SqlServerCompact, 6.3.0\n\nRecommendation:\n\nEntityFramework.SqlServerCompact, 4.3.1"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "EntityFramework.SqlServerCompact, 6.3.0\n\nRecommendation:\n\nEntityFramework.SqlServerCompact, 4.3.1",
+            "protectedSnippet": "EntityFramework.SqlServerCompact, 6.3.0\n\nRecommendation:\n\nEntityFramework.SqlServerCompact, 4.3.1",
+            "label": "EntityFramework.SqlServerCompact 6.3.0",
+            "properties": {
+              "PackageId": "EntityFramework.SqlServerCompact",
+              "PackageVersion": "6.3.0",
+              "PackageNewVersion": "4.3.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "af0278c2-1dbd-424a-b5b6-141c3ba5d74f",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNet.Mvc, 5.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.AspNet.Mvc, 5.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.AspNet.Mvc, 5.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.AspNet.Mvc, 5.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.AspNet.Mvc 5.2.7",
+            "properties": {
+              "PackageId": "Microsoft.AspNet.Mvc",
+              "PackageVersion": "5.2.7",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "225cbb32-6d1b-40c6-9d60-3598dee4fcdf",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNet.Razor, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.AspNet.Razor, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.AspNet.Razor, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.AspNet.Razor, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.AspNet.Razor 3.2.7",
+            "properties": {
+              "PackageId": "Microsoft.AspNet.Razor",
+              "PackageVersion": "3.2.7",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "28590c4f-969a-4643-8aa3-1d880d098806",
+          "ruleId": "NuGet.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.AspNet.Web.Optimization 1.1.3",
+            "properties": {
+              "PackageId": "Microsoft.AspNet.Web.Optimization",
+              "PackageVersion": "1.1.3",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "f0a862c7-3193-49f8-a41b-ee19e8dc23a5",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNet.WebPages, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.AspNet.WebPages, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.AspNet.WebPages, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.AspNet.WebPages, 3.2.7\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.AspNet.WebPages 3.2.7",
+            "properties": {
+              "PackageId": "Microsoft.AspNet.WebPages",
+              "PackageVersion": "3.2.7",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5acc1d66-ff7c-4eb4-9621-fceb5a67f99b",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform, 2.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform, 2.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform, 2.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform, 2.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform 2.0.0",
+            "properties": {
+              "PackageId": "Microsoft.CodeDom.Providers.DotNetCompilerPlatform",
+              "PackageVersion": "2.0.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "63d7a8e2-2e08-4f33-b2af-c6fa93f84ce0",
+          "ruleId": "NuGet.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.SqlServer.Compact, 4.0.8876.1\n\nRecommendation:\n\nNo supported version found",
+              "protected": "Microsoft.SqlServer.Compact, 4.0.8876.1\n\nRecommendation:\n\nNo supported version found"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.SqlServer.Compact, 4.0.8876.1\n\nRecommendation:\n\nNo supported version found",
+            "protectedSnippet": "Microsoft.SqlServer.Compact, 4.0.8876.1\n\nRecommendation:\n\nNo supported version found",
+            "label": "Microsoft.SqlServer.Compact 4.0.8876.1",
+            "properties": {
+              "PackageId": "Microsoft.SqlServer.Compact",
+              "PackageVersion": "4.0.8876.1",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "5550699a-4728-4df2-bf20-fc9a69debc29",
+          "ruleId": "NuGet.0003",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.Web.Infrastructure, 1.0.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+              "protected": "Microsoft.Web.Infrastructure, 1.0.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.Web.Infrastructure, 1.0.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "protectedSnippet": "Microsoft.Web.Infrastructure, 1.0.0.0\n\nRecommendation:\n\nPackage functionality included with new framework reference",
+            "label": "Microsoft.Web.Infrastructure 1.0.0.0",
+            "properties": {
+              "PackageId": "Microsoft.Web.Infrastructure",
+              "PackageVersion": "1.0.0.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "2e2d5aba-dd04-4964-80e1-d20355aef71e",
+          "ruleId": "NuGet.0002",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nRemove Newtonsoft.Json, and replace with new package Newtonsoft.Json 13.0.4",
+              "protected": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nRemove Newtonsoft.Json, and replace with new package Newtonsoft.Json 13.0.4"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nRemove Newtonsoft.Json, and replace with new package Newtonsoft.Json 13.0.4",
+            "protectedSnippet": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nRemove Newtonsoft.Json, and replace with new package Newtonsoft.Json 13.0.4",
+            "label": "Newtonsoft.Json 11.0.1",
+            "properties": {
+              "PackageId": "Newtonsoft.Json",
+              "PackageVersion": "11.0.1",
+              "PackageNewVersion": "13.0.4",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "8ebd317c-96e9-4a26-a40f-609c8503993f",
+          "ruleId": "NuGet.0005",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "EntityFramework, 6.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove EntityFramework, and replace with new package EntityFramework, 6.5.1",
+              "protected": "EntityFramework, 6.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove EntityFramework, and replace with new package EntityFramework, 6.5.1"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "EntityFramework, 6.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove EntityFramework, and replace with new package EntityFramework, 6.5.1",
+            "protectedSnippet": "EntityFramework, 6.3.0\n\nRecommendation:\n\nShould be replaced.\nRemove EntityFramework, and replace with new package EntityFramework, 6.5.1",
+            "label": "EntityFramework 6.3.0",
+            "properties": {
+              "PackageId": "EntityFramework",
+              "PackageVersion": "6.3.0",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "e6a2741e-8b30-4423-b6fd-b74ab36a3be7",
+          "ruleId": "NuGet.0004",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "jQuery, 3.3.1\n\nRecommendation:\n\njQuery, 3.7.1",
+              "protected": "jQuery, 3.3.1\n\nRecommendation:\n\njQuery, 3.7.1"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "jQuery, 3.3.1\n\nRecommendation:\n\njQuery, 3.7.1",
+            "protectedSnippet": "jQuery, 3.3.1\n\nRecommendation:\n\njQuery, 3.7.1",
+            "label": "jQuery 3.3.1",
+            "properties": {
+              "PackageId": "jQuery",
+              "PackageVersion": "3.3.1",
+              "PackageNewVersion": "3.7.1",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "d66a7224-d5e8-46e2-a2d9-a029b5e4cf82",
+          "ruleId": "NuGet.0004",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "jQuery.Validation, 1.17.0\n\nRecommendation:\n\njQuery.Validation, 1.21.0",
+              "protected": "jQuery.Validation, 1.17.0\n\nRecommendation:\n\njQuery.Validation, 1.21.0"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "jQuery.Validation, 1.17.0\n\nRecommendation:\n\njQuery.Validation, 1.21.0",
+            "protectedSnippet": "jQuery.Validation, 1.17.0\n\nRecommendation:\n\njQuery.Validation, 1.21.0",
+            "label": "jQuery.Validation 1.17.0",
+            "properties": {
+              "PackageId": "jQuery.Validation",
+              "PackageVersion": "1.17.0",
+              "PackageNewVersion": "1.21.0",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "a1a31eb3-fd6b-47ac-aafc-0dd312ac18a8",
+          "ruleId": "NuGet.0005",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nShould be replaced.\nRemove Microsoft.AspNet.Web.Optimization, and replace with new package LigerShark.WebOptimizer.Core, 3.0.477",
+              "protected": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nShould be replaced.\nRemove Microsoft.AspNet.Web.Optimization, and replace with new package LigerShark.WebOptimizer.Core, 3.0.477"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nShould be replaced.\nRemove Microsoft.AspNet.Web.Optimization, and replace with new package LigerShark.WebOptimizer.Core, 3.0.477",
+            "protectedSnippet": "Microsoft.AspNet.Web.Optimization, 1.1.3\n\nRecommendation:\n\nShould be replaced.\nRemove Microsoft.AspNet.Web.Optimization, and replace with new package LigerShark.WebOptimizer.Core, 3.0.477",
+            "label": "Microsoft.AspNet.Web.Optimization 1.1.3",
+            "properties": {
+              "PackageId": "Microsoft.AspNet.Web.Optimization",
+              "PackageVersion": "1.1.3",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "99b59ee2-7e52-445f-9558-9ab778f93ba2",
+          "ruleId": "NuGet.0005",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Microsoft.jQuery.Unobtrusive.Validation, 3.2.11\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.jQuery.Unobtrusive.Validation, and replace with new package Microsoft.jQuery.Unobtrusive.Validation, 4.0.0",
+              "protected": "Microsoft.jQuery.Unobtrusive.Validation, 3.2.11\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.jQuery.Unobtrusive.Validation, and replace with new package Microsoft.jQuery.Unobtrusive.Validation, 4.0.0"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Microsoft.jQuery.Unobtrusive.Validation, 3.2.11\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.jQuery.Unobtrusive.Validation, and replace with new package Microsoft.jQuery.Unobtrusive.Validation, 4.0.0",
+            "protectedSnippet": "Microsoft.jQuery.Unobtrusive.Validation, 3.2.11\n\nRecommendation:\n\nThis package has been deprecated as part of the .NET Package Deprecation effort. You can learn more about it from https://github.com/dotnet/announcements/issues/217\nRemove Microsoft.jQuery.Unobtrusive.Validation, and replace with new package Microsoft.jQuery.Unobtrusive.Validation, 4.0.0",
+            "label": "Microsoft.jQuery.Unobtrusive.Validation 3.2.11",
+            "properties": {
+              "PackageId": "Microsoft.jQuery.Unobtrusive.Validation",
+              "PackageVersion": "3.2.11",
+              "PackageNewVersion": null,
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "486f3a47-2606-420c-8f37-23ac930886f8",
+          "ruleId": "NuGet.0004",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nNewtonsoft.Json, 13.0.4",
+              "protected": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nNewtonsoft.Json, 13.0.4"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nNewtonsoft.Json, 13.0.4",
+            "protectedSnippet": "Newtonsoft.Json, 11.0.1\n\nRecommendation:\n\nNewtonsoft.Json, 13.0.4",
+            "label": "Newtonsoft.Json 11.0.1",
+            "properties": {
+              "PackageId": "Newtonsoft.Json",
+              "PackageVersion": "11.0.1",
+              "PackageNewVersion": "13.0.4",
+              "PackageReplacements": null
+            }
+          }
+        },
+        {
+          "incidentId": "8e114424-749e-4c61-a224-fd428096b825",
+          "ruleId": "Project.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "MvcMusicStore.csproj"
+          }
+        },
+        {
+          "incidentId": "fb220f32-bd55-40d2-8a9d-41f8ead45db8",
+          "ruleId": "Project.0002",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "snippetModel": {
+              "unrestricted": "Current target framework: .NETFramework,Version=v4.7.2\nRecommended target framework: net10.0",
+              "protected": "Current target framework: .NETFramework,Version=v4.7.2\nRecommended target framework: net10.0"
+            },
+            "kind": "File",
+            "path": "MvcMusicStore.csproj",
+            "snippet": "Current target framework: .NETFramework,Version=v4.7.2\nRecommended target framework: net10.0",
+            "protectedSnippet": "Current target framework: .NETFramework,Version=v4.7.2\nRecommended target framework: net10.0",
+            "properties": {
+              "CurrentTargetFramework": ".NETFramework,Version=v4.7.2",
+              "RecommendedTargetFramework": "net10.0"
+            }
+          }
+        },
+        {
+          "incidentId": "e4504d98-d7f9-4f1c-ae0c-5578f45aa94f",
+          "ruleId": "Feature.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Views\\Shared\\_Layout.cshtml"
+          }
+        },
+        {
+          "incidentId": "fd3da93a-d831-4d24-92c2-97891ef589b5",
+          "ruleId": "Feature.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Views\\StoreManager\\Create.cshtml"
+          }
+        },
+        {
+          "incidentId": "35df3734-3595-428c-a82a-a855ed16495a",
+          "ruleId": "Feature.0001",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Views\\StoreManager\\Edit.cshtml"
+          }
+        },
+        {
+          "incidentId": "d42c0899-02d5-4c9a-b01a-014ae5ca1909",
+          "ruleId": "Feature.1000",
+          "projectPath": "MvcMusicStore.csproj",
+          "state": "Active",
+          "location": {
+            "kind": "File",
+            "path": "Global.asax.cs"
+          }
+        }
+      ],
+      "features": []
+    }
+  ],
+  "rules": {
+    "NuGet.0002": {
+      "id": "NuGet.0002",
+      "isFeature": false,
+      "description": "NuGet package upgrade is recommended for selected target framework.\n\nStandard .NET packages are recommended to have versions matching version of .NET that project targets.\n\nSome other packages also are known to work better for selected target frameworks.",
+      "label": "NuGet package upgrade is recommended",
+      "severity": "Potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262530",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0001": {
+      "id": "NuGet.0001",
+      "isFeature": false,
+      "description": "NuGet package is incompatible with selected target framework.\n\nPackage needs to be upgraded to a version supporting selected project target framework. If there no new package versions supporting new target framework, different package needs to be used and all code needs to be upgraded to new API.",
+      "label": "NuGet package is incompatible",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262529",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0003": {
+      "id": "NuGet.0003",
+      "isFeature": false,
+      "description": "NuGet package functionality is included with framework reference.\n\nPackage needs to be removed.",
+      "label": "NuGet package functionality is included with framework reference",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262609",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0005": {
+      "id": "NuGet.0005",
+      "isFeature": false,
+      "description": "NuGet package is deprecated.\n\nGo to its documentation and if there is a guidance for replacement of functionality provided by this package.",
+      "label": "NuGet package is deprecated",
+      "severity": "Optional",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2262531",
+          "isCustom": false
+        }
+      ]
+    },
+    "NuGet.0004": {
+      "id": "NuGet.0004",
+      "isFeature": false,
+      "description": "NuGet package contains security vulnerabilities.\n\nPackage needs to be upgraded to a newer version that addresses known security vulnerabilities.",
+      "label": "NuGet package contains security vulnerability",
+      "severity": "Optional",
+      "effort": 1
+    },
+    "Project.0001": {
+      "id": "Project.0001",
+      "isFeature": false,
+      "description": "Project file needs to be converted to SDK-style. Modern .NET framework projects require a change in the project file format and use SDK corresponding to project flavor and functionality.",
+      "label": "Project file needs to be converted to SDK-style",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Project.0002": {
+      "id": "Project.0002",
+      "isFeature": false,
+      "description": "Project\u0027s target framework(s) needs to be changed to the new target framework that you selected for this upgrade.\n\nDuring upgrade target framework will be adjusted to corresponding platform when applicable. In some cases project would result in multiple target frameworks after the upgrade if it was using features that now have their own platforms in modern .NET frameworks (windows, iOS, Android etc).",
+      "label": "Project\u0027s target framework(s) needs to be changed",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "title": "Overview of porting from .NET Framework to .NET",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        },
+        {
+          "title": ".NET project SDKs",
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265226",
+          "isCustom": false
+        }
+      ]
+    },
+    "Feature.0001": {
+      "id": "Feature.0001",
+      "isFeature": true,
+      "description": "System.Web.Optimization bundling and minification is not supported in .NET Core and should be replaced with actual html tags pointing to content files.",
+      "label": "System.Web.Optimization bundling and minification is not supported in .NET Core and should be replaced with actual html tags pointing to content files",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        }
+      ]
+    },
+    "Feature.1000": {
+      "id": "Feature.1000",
+      "isFeature": true,
+      "description": "Convert application initialization code from Global.asax.cs to .NET Core and clean up Global.asax.cs.",
+      "label": "Convert application initialization code from Global.asax.cs to .NET Core and clean up Global.asax.cs",
+      "severity": "Mandatory",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://go.microsoft.com/fwlink/?linkid=2265227",
+          "isCustom": false
+        }
+      ]
+    }
+  }
+}

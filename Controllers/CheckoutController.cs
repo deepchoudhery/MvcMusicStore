@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MvcMusicStore.Models;
 
 namespace MvcMusicStore.Controllers
@@ -11,25 +12,22 @@ namespace MvcMusicStore.Controllers
         private MusicStoreEntities dbContext = new MusicStoreEntities();
         const string PromoCode = "FREE";
 
-        //
         // GET: /Checkout/AddressAndPayment
         public ActionResult AddressAndPayment()
         {
             return View();
         }
 
-        //
         // POST: /Checkout/AddressAndPayment
         [HttpPost]
-        public ActionResult AddressAndPayment(FormCollection values)
+        public ActionResult AddressAndPayment(Microsoft.AspNetCore.Http.IFormCollection values)
         {
             var order = new Order();
-            TryUpdateModel(order);
+            TryUpdateModelAsync(order).GetAwaiter().GetResult();
 
             try
             {
-                if (string.Equals(values["PromoCode"], PromoCode,
-                    StringComparison.OrdinalIgnoreCase) == false)
+                if (string.Equals(values["PromoCode"], PromoCode, StringComparison.OrdinalIgnoreCase) == false)
                 {
                     return View(order);
                 }
@@ -38,32 +36,24 @@ namespace MvcMusicStore.Controllers
                     order.Username = User.Identity.Name;
                     order.OrderDate = DateTime.Now;
 
-                    //Save Order
                     dbContext.Orders.Add(order);
                     dbContext.SaveChanges();
 
-                    //Process the order
-                    //var cart = ShoppingCart.GetCart(this.HttpContext);
-                    var cart = ShoppingCart.GetCart(this);
+                    var cart = ShoppingCart.GetCart(HttpContext);
                     cart.CreateOrder(order);
 
-                    return RedirectToAction("Complete",
-                        new { id = order.OrderId });
+                    return RedirectToAction("Complete", new { id = order.OrderId });
                 }
-
             }
             catch
             {
-                //Invalid - redisplay with errors
                 return View(order);
             }
         }
 
-        //
         // GET: /Checkout/Complete
         public ActionResult Complete(int id)
         {
-            // Validate customer owns this order
             bool isValid = dbContext.Orders.Any(
                 o => o.OrderId == id &&
                 o.Username == User.Identity.Name);

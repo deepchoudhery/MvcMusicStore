@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Web.Mvc;
-using System.Web.Security;
-using CompareAttribute = System.ComponentModel.DataAnnotations.CompareAttribute;
 
-namespace MVCUserRoles.Models
+namespace MvcMusicStore.Models
 {
-
     public class ChangePasswordModel
     {
         [Required]

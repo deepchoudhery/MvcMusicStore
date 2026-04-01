@@ -1,13 +1,2 @@
-﻿using System.Web;
-using System.Web.Mvc;
+// Migrated to Program.cs — ASP.NET Core uses app.UseExceptionHandler() middleware.
 
-namespace MvcMusicStore
-{
-    public class FilterConfig
-    {
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
-    }
-}
