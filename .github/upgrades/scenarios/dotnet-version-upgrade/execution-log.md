@@ -18,3 +18,8 @@ Upgraded TargetFramework net472 → net10.0. Cleaned up csproj: removed all Syst
 
 Full in-place ASP.NET Core migration completed. Deleted Global.asax, App_Start files (BundleConfig, FilterConfig, RouteConfig). Created Program.cs with cookie auth, session, EF6 init, MVC routing and static files. Created appsettings.json, _ViewImports.cshtml, wwwroot. Updated all 7 controllers (System.Web → Microsoft.AspNetCore.Mvc), AccountController uses SignInAsync/SignOutAsync, ShoppingCart uses ISession API. Views updated: bundle calls replaced with direct tags, Error.cshtml model removed, Membership references removed. Build: 0 errors, 0 warnings.
 
+
+## [2026-03-31 17:25] 05-final-validation
+
+Final validation complete. Removed remaining legacy artifacts: packages.config, Web.Debug.config, Web.Release.config, _bin_deployableAssemblies (SQL CE DLLs). Solution builds with 0 errors, 0 warnings targeting net10.0. All changes committed to git (49f5083).
+
