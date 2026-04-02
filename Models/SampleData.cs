@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data.Entity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MvcMusicStore.Models
 {
-    public class SampleData : DropCreateDatabaseIfModelChanges<MusicStoreEntities>
+    public static class SampleData
     {
-        protected override void Seed(MusicStoreEntities dbContext)
+        public static async Task SeedAsync(MusicStoreEntities dbContext, IServiceProvider services)
         {
+            if (dbContext.Genres.Any()) return;
             var genres = new List<Genre>
             {
                 new Genre { Name = "Rock" },
@@ -177,7 +174,7 @@ namespace MvcMusicStore.Models
                 new Artist { Name = "Zeca Pagodinho" }
             };
 
-            new List<Album>
+            var albums = new List<Album>
             {
                 new Album { Title = "A Copland Celebration, Vol. I", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Aaron Copland & London Symphony Orchestra"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Worlds", Genre = genres.Single(g => g.Name == "Jazz"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Aaron Goldberg"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
@@ -425,7 +422,32 @@ namespace MvcMusicStore.Models
                 new Album { Title = "Bartok: Violin & Viola Concertos", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yehudi Menuhin"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Bach: The Cello Suites", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yo-Yo Ma"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Ao Vivo [IMPORT]", Genre = genres.Single(g => g.Name == "Latin"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Zeca Pagodinho"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
-            }.ForEach(a => dbContext.Albums.Add(a));
+            };
+            dbContext.Genres.AddRange(genres);
+            dbContext.Artists.AddRange(artists);
+            dbContext.Albums.AddRange(albums);
+            dbContext.SaveChanges();
+
+            // Seed admin role and user
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+
+            if (!await roleManager.RoleExistsAsync("Administrator"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Administrator"));
+            }
+
+            var adminUser = await userManager.FindByNameAsync("Administrator");
+            if (adminUser == null)
+            {
+                adminUser = new ApplicationUser
+                {
+                    UserName = "Administrator",
+                    Email = "admin@example.com"
+                };
+                await userManager.CreateAsync(adminUser, "Password1");
+                await userManager.AddToRoleAsync(adminUser, "Administrator");
+            }
         }
     }
 }
