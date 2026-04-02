@@ -1,15 +1,21 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Data.Entity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MvcMusicStore.Models
 {
-    public class SampleData : DropCreateDatabaseIfModelChanges<MusicStoreEntities>
+    public static class SampleData
     {
-        protected override void Seed(MusicStoreEntities dbContext)
+        public static async System.Threading.Tasks.Task Initialize(
+            MusicStoreEntities context,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
+            // Only seed if the database is empty
+            if (context.Genres.Any())
+                return;
+
             var genres = new List<Genre>
             {
                 new Genre { Name = "Rock" },
@@ -425,7 +431,15 @@ namespace MvcMusicStore.Models
                 new Album { Title = "Bartok: Violin & Viola Concertos", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yehudi Menuhin"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Bach: The Cello Suites", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yo-Yo Ma"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Ao Vivo [IMPORT]", Genre = genres.Single(g => g.Name == "Latin"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Zeca Pagodinho"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
-            }.ForEach(a => dbContext.Albums.Add(a));
+            }.ForEach(a => context.Albums.Add(a));
+
+            await context.SaveChangesAsync();
+
+            // Seed Identity roles
+            if (!await roleManager.RoleExistsAsync("Administrator"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Administrator"));
+            }
         }
     }
 }
