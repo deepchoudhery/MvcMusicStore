@@ -40,6 +40,7 @@ namespace MvcMusicStore.Controllers
 
         // AJAX: /ShoppingCart/RemoveFromCart/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult RemoveFromCart(int id)
         {
             var cart = ShoppingCart.GetCart(HttpContext, _dbContext);
