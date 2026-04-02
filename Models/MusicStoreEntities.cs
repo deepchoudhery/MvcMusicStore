@@ -1,24 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace MvcMusicStore.Models
 {
-    public class MusicStoreEntities : DbContext
+    public class MusicStoreEntities : IdentityDbContext<ApplicationUser>
     {
-        public DbSet<Album> Albums { get; set; }
-        public DbSet<Genre> Genres { get; set; }
+        public MusicStoreEntities(DbContextOptions<MusicStoreEntities> options)
+            : base(options)
+        {
+        }
 
-        // The declaration of "Artists" is added to allow the Scaffolding feature to build our StoreManagerController
-        // with read/write actions and views from the Album model and using our MusicStoreEntities database dbContext class
-        // with no errors in building wizard
-        public DbSet<Artist> Artists { get; set; }
-
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
-
+        public DbSet<Album> Albums => Set<Album>();
+        public DbSet<Genre> Genres => Set<Genre>();
+        public DbSet<Artist> Artists => Set<Artist>();
+        public DbSet<Cart> Carts => Set<Cart>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderDetail> OrderDetails => Set<OrderDetail>();
     }
 }

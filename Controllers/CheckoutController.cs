@@ -1,72 +1,67 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MvcMusicStore.Models;
+using System;
 
 namespace MvcMusicStore.Controllers
 {
     [Authorize]
     public class CheckoutController : Controller
     {
-        private MusicStoreEntities dbContext = new MusicStoreEntities();
+        private readonly MusicStoreEntities _dbContext;
         const string PromoCode = "FREE";
 
-        //
+        public CheckoutController(MusicStoreEntities dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         // GET: /Checkout/AddressAndPayment
-        public ActionResult AddressAndPayment()
+        public IActionResult AddressAndPayment()
         {
             return View();
         }
 
-        //
         // POST: /Checkout/AddressAndPayment
         [HttpPost]
-        public ActionResult AddressAndPayment(FormCollection values)
+        [ValidateAntiForgeryToken]
+        public IActionResult AddressAndPayment(Order order, string promoCode)
         {
-            var order = new Order();
-            TryUpdateModel(order);
+            if (!ModelState.IsValid)
+            {
+                return View(order);
+            }
 
             try
             {
-                if (string.Equals(values["PromoCode"], PromoCode,
-                    StringComparison.OrdinalIgnoreCase) == false)
+                if (!string.Equals(promoCode, PromoCode, StringComparison.OrdinalIgnoreCase))
                 {
                     return View(order);
                 }
-                else
-                {
-                    order.Username = User.Identity.Name;
-                    order.OrderDate = DateTime.Now;
 
-                    //Save Order
-                    dbContext.Orders.Add(order);
-                    dbContext.SaveChanges();
+                order.Username = User.Identity!.Name!;
+                order.OrderDate = DateTime.Now;
 
-                    //Process the order
-                    //var cart = ShoppingCart.GetCart(this.HttpContext);
-                    var cart = ShoppingCart.GetCart(this);
-                    cart.CreateOrder(order);
+                _dbContext.Orders.Add(order);
+                _dbContext.SaveChanges();
 
-                    return RedirectToAction("Complete",
-                        new { id = order.OrderId });
-                }
+                var cart = ShoppingCart.GetCart(HttpContext, _dbContext);
+                cart.CreateOrder(order);
 
+                return RedirectToAction("Complete", new { id = order.OrderId });
             }
             catch
             {
-                //Invalid - redisplay with errors
                 return View(order);
             }
         }
 
-        //
         // GET: /Checkout/Complete
-        public ActionResult Complete(int id)
+        public IActionResult Complete(int id)
         {
-            // Validate customer owns this order
-            bool isValid = dbContext.Orders.Any(
+            bool isValid = _dbContext.Orders.Any(
                 o => o.OrderId == id &&
-                o.Username == User.Identity.Name);
+                o.Username == User.Identity!.Name);
 
             if (isValid)
             {
@@ -76,15 +71,6 @@ namespace MvcMusicStore.Controllers
             {
                 return View("Error");
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dbContext.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

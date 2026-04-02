@@ -1,4 +1,4 @@
-﻿@model MvcMusicStore.ViewModels.ShoppingCartViewModel
+@model MvcMusicStore.ViewModels.ShoppingCartViewModel
 @{
     ViewBag.Title = "Shopping Cart";
 }
@@ -10,6 +10,7 @@
 </p>
 <div id="update-message">
 </div>
+@Html.AntiForgeryToken()
 <table>
     <tr>
         <th>
@@ -27,10 +28,10 @@
     {
         <tr id="row-@item.RecordId">
             <td>
-                @Html.ActionLink(item.Album.Title, "Details", "Store", new { id = item.AlbumId }, null)
+                @Html.ActionLink(item.Album!.Title, "Details", "Store", new { id = item.AlbumId }, null)
             </td>
             <td>
-                @item.Album.Price
+                @item.Album!.Price
             </td>
             <td id="item-count-@item.RecordId">
                 @item.Count
@@ -62,43 +63,30 @@
                 var recordToDelete = $(this).attr("data-id");
 
                 if (recordToDelete != '') {
+                    // Get anti-forgery token for secure AJAX post
+                    var token = $('input[name="__RequestVerificationToken"]').val();
 
-                    // Perform the ajax post
-                    $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
-                        function (data) {
+                    // Perform the ajax post with CSRF token
+                    $.ajax({
+                        url: "/ShoppingCart/RemoveFromCart",
+                        type: "POST",
+                        data: { "id": recordToDelete, "__RequestVerificationToken": token },
+                        success: function (data) {
                             // Successful requests get here
                             // Update the page elements
-                            if (data.ItemCount == 0) {
-                                $('#row-' + data.DeleteId).fadeOut('slow');
+                            if (data.itemCount == 0) {
+                                $('#row-' + data.deleteId).fadeOut('slow');
                             } else {
-                                $('#item-count-' + data.DeleteId).text(data.ItemCount);
+                                $('#item-count-' + data.deleteId).text(data.itemCount);
                             }
 
-                            $('#cart-total').text(data.CartTotal);
-                            $('#update-message').text(data.Message);
-                            $('#cart-status').text('Cart (' + data.CartCount + ')');
-                        });
+                            $('#cart-total').text(data.cartTotal);
+                            $('#update-message').text(data.message);
+                            $('#cart-status').text('Cart (' + data.cartCount + ')');
+                        }
+                    });
                 }
             });
-
         });
-
-
-        function handleUpdate() {
-            // Load and deserialize the returned JSON data
-            var json = context.get_data();
-            var data = Sys.Serialization.JavaScriptSerializer.deserialize(json);
-
-            // Update the page elements
-            if (data.ItemCount == 0) {
-                $('#row-' + data.DeleteId).fadeOut('slow');
-            } else {
-                $('#item-count-' + data.DeleteId).text(data.ItemCount);
-            }
-
-            $('#cart-total').text(data.CartTotal);
-            $('#update-message').text(data.Message);
-            $('#cart-status').text('Cart (' + data.CartCount + ')');
-        }
     </script>
 }

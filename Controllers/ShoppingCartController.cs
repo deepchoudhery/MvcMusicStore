@@ -1,74 +1,59 @@
-﻿using System.Linq;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MvcMusicStore.Models;
 using MvcMusicStore.ViewModels;
+using System.Net;
 
 namespace MvcMusicStore.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private MusicStoreEntities dbContext = new MusicStoreEntities();
+        private readonly MusicStoreEntities _dbContext;
 
-        //
-        // GET: /ShoppingCart/
-
-        public ActionResult Index()
+        public ShoppingCartController(MusicStoreEntities dbContext)
         {
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
+            _dbContext = dbContext;
+        }
 
-            // Set up our ViewModel
+        // GET: /ShoppingCart/
+        public IActionResult Index()
+        {
+            var cart = ShoppingCart.GetCart(HttpContext, _dbContext);
+
             var viewModel = new ShoppingCartViewModel
             {
                 CartItems = cart.GetCartItems(),
                 CartTotal = cart.GetTotal()
             };
 
-            // Return the view
             return View(viewModel);
         }
 
-        //
         // GET: /Store/AddToCart/5
-
-        public ActionResult AddToCart(int id)
+        public IActionResult AddToCart(int id)
         {
-
-            // Retrieve the album from the database
-            var addedAlbum = dbContext.Albums
-                .Single(album => album.AlbumId == id);
-
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
-
-            // Add it to the shopping cart
+            var addedAlbum = _dbContext.Albums.Single(album => album.AlbumId == id);
+            var cart = ShoppingCart.GetCart(HttpContext, _dbContext);
             cart.AddToCart(addedAlbum);
-
-            // Go back to the main store page for more shopping
             return RedirectToAction("Index");
         }
 
-        // Remove the item from the cart
         // AJAX: /ShoppingCart/RemoveFromCart/5
         [HttpPost]
-        public ActionResult RemoveFromCart(int id)
+        [ValidateAntiForgeryToken]
+        public IActionResult RemoveFromCart(int id)
         {
-            
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
+            var cart = ShoppingCart.GetCart(HttpContext, _dbContext);
 
-            // Get the name of the album to display confirmation
-            string albumName = dbContext.Carts
-                .Single(item => item.RecordId == id).Album.Title;
+            string albumName = _dbContext.Carts
+                .Include(c => c.Album)
+                .Single(item => item.RecordId == id).Album!.Title;
 
-            // Remove from cart
             int itemCount = cart.RemoveFromCart(id);
 
-            // Display the confirmation message
             var results = new ShoppingCartRemoveViewModel
             {
-                Message = Server.HtmlEncode(albumName) +
-                    " has been removed from your shopping cart.",
+                Message = WebUtility.HtmlEncode(albumName) + " has been removed from your shopping cart.",
                 CartTotal = cart.GetTotal(),
                 CartCount = cart.GetCount(),
                 ItemCount = itemCount,
@@ -76,29 +61,6 @@ namespace MvcMusicStore.Controllers
             };
 
             return Json(results);
-        }
-
-        //
-        // GET: /ShoppingCart/CartSummary
-
-        [ChildActionOnly]
-        public ActionResult CartSummary()
-        {
-            //var cart = ShoppingCart.GetCart(this.HttpContext);
-            var cart = ShoppingCart.GetCart(this);
-
-            ViewData["CartCount"] = cart.GetCount();
-
-            return PartialView("CartSummary");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dbContext.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

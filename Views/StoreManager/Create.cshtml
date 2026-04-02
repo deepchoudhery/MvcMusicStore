@@ -1,11 +1,10 @@
-﻿@model MvcMusicStore.Models.Album
+@model MvcMusicStore.Models.Album
 
 @{
     ViewBag.Title = "Create";
 }
 
 <h2>Create</h2>
-
 
 @using (Html.BeginForm()) 
 {
@@ -18,15 +17,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.GenreId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <!--
-        The first parameter, GenreId, (The name of the form field to return),
-                    tells the DropDownList to look for a value named GenreId in either the model or ViewBag.
-        The Second parameter, (null???) it suppose to be somthing like (SelectList)ViewBag.GenreId or new SelectList(ViewBag.GenreId)
-                    A collection of System.Web.Mvc.SelectListItem objects that are used to populate the drop-down list.
-                    We passed it as null because the list name in the ViewBag is same as the name field in the model which is GenreId
-    -->
-                @*Html.DropDownList("GenreId", null, htmlAttributes: new { @class = "form-control" })*@
-                @Html.DropDownList("GenreId", (SelectList)ViewBag.GenreId, "Select Genere", htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("GenreId", (SelectList)ViewBag.GenreId, "Select Genre", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.GenreId, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -34,7 +25,6 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ArtistId, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @*Html.DropDownList("ArtistId", null, htmlAttributes: new { @class = "form-control" })*@
                 @Html.DropDownList("ArtistId", (SelectList)ViewBag.ArtistId, "Select Artist", htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.ArtistId, "", new { @class = "text-danger" })
             </div>
@@ -77,5 +67,6 @@
 </div>
 
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
 }

@@ -1,27 +1,20 @@
-﻿using MvcMusicStore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcMusicStore.Controllers
 {
     public class ErrorController : Controller
     {
-        //  
-        // GET: /Error/  
-        public ActionResult Index()
+        // GET: /Error/
+        public IActionResult Index()
         {
             return View();
         }
 
-        //  
-        // GET: /Error/NotFound  
-        public ActionResult NotFound()
+        // GET: /Error/NotFound
+        [ActionName("NotFound")]
+        public IActionResult PageNotFound()
         {
-            return View();
+            return View("NotFound");
         }
-
     }
 }
