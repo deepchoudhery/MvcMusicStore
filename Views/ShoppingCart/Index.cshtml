@@ -54,7 +54,10 @@
     </tr>
 </table>
 @section scripts {
+    @Html.AntiForgeryToken()
     <script type="text/javascript">
+        var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
         $(function () {
             // Document.ready -> link up remove event handler
             $(".RemoveLink").click(function () {
@@ -63,8 +66,9 @@
 
                 if (recordToDelete != '') {
 
-                    // Perform the ajax post
-                    $.post("/ShoppingCart/RemoveFromCart", { "id": recordToDelete },
+                    // Perform the ajax post with anti-forgery token
+                    $.post("/ShoppingCart/RemoveFromCart",
+                        { "id": recordToDelete, "__RequestVerificationToken": antiForgeryToken },
                         function (data) {
                             // Successful requests get here
                             // Update the page elements
@@ -82,23 +86,5 @@
             });
 
         });
-
-
-        function handleUpdate() {
-            // Load and deserialize the returned JSON data
-            var json = context.get_data();
-            var data = Sys.Serialization.JavaScriptSerializer.deserialize(json);
-
-            // Update the page elements
-            if (data.ItemCount == 0) {
-                $('#row-' + data.DeleteId).fadeOut('slow');
-            } else {
-                $('#item-count-' + data.DeleteId).text(data.ItemCount);
-            }
-
-            $('#cart-total').text(data.CartTotal);
-            $('#update-message').text(data.Message);
-            $('#cart-status').text('Cart (' + data.CartCount + ')');
-        }
     </script>
 }
