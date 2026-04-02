@@ -30,9 +30,14 @@
 | T24: Update Shared/Error.cshtml | ✅ SUCCESS | Removed System.Web.Mvc.HandleErrorInfo model |
 | T25: Stub out App_Start files | ✅ SUCCESS | BundleConfig, FilterConfig, RouteConfig |
 | T26: Fix build warnings (nullable refs) | ✅ SUCCESS | 0 warnings, 0 errors |
+| T27: Fix CSRF vulnerability in RemoveFromCart | ✅ SUCCESS | Added [ValidateAntiForgeryToken], updated AJAX call |
 
 ## Build Result
 - **Status**: ✅ Build Succeeded
 - **Warnings**: 0
 - **Errors**: 0
 - **Target Framework**: net10.0
+
+## Security
+- CSRF vulnerability fixed: `[ValidateAntiForgeryToken]` added to `RemoveFromCart` POST action
+- Anti-forgery token included in AJAX request from ShoppingCart view
