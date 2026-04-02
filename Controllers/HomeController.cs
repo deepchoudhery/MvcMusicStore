@@ -1,59 +1,48 @@
-﻿using MvcMusicStore.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MvcMusicStore.Models;
 
 namespace MvcMusicStore.Controllers
 {
     public class HomeController : Controller
     {
-        private MusicStoreEntities dbContext = new MusicStoreEntities();
+        private readonly MusicStoreEntities _dbContext;
+
+        public HomeController(MusicStoreEntities dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         //
         // GET: /Home/
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // Get most popular albums
-            var albums = GetTopSellingAlbums(5);
-
-            return View(albums);            
+            var albums = await GetTopSellingAlbumsAsync(5);
+            return View(albums);
         }
 
         //
         // GET: /Home/About
-        public ActionResult About()
+        public IActionResult About()
         {
             ViewBag.Message = "Music Store Web App.";
-
             return View();
         }
 
         //
         // GET: /Home/Contact
-        public ActionResult Contact()
+        public IActionResult Contact()
         {
             ViewBag.Message = "Music Store Web App.";
-
             return View();
         }
 
-        // Return the top rated selling Albums
-        private List<Album> GetTopSellingAlbums(int count)
+        private async Task<List<Album>> GetTopSellingAlbumsAsync(int count)
         {
-            // Group the order details by album and return
-            // the albums with the highest count
-            return dbContext.Albums.OrderByDescending(a => a.OrderDetails.Count()).Take(count).ToList();            
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                dbContext.Dispose();
-            }
-            base.Dispose(disposing);
+            return await _dbContext.Albums
+                .OrderByDescending(a => a.OrderDetails!.Count)
+                .Take(count)
+                .ToListAsync();
         }
     }
 }

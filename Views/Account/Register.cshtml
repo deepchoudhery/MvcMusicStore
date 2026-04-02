@@ -1,4 +1,4 @@
-﻿@model MVCUserRoles.Models.RegisterModel
+@model MvcMusicStore.Models.RegisterModel
 
 @{
     ViewBag.Title = "Register";
@@ -6,13 +6,14 @@
 
 <h2>Create a New Account</h2>
 <p>
-    Use the form below to create a new account. 
+    Use the form below to create a new account.
 </p>
 <p>
-    Passwords are required to be a minimum of @Membership.MinRequiredPasswordLength characters in length.
+    Passwords are required to be a minimum of 6 characters in length.
 </p>
 
 @using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
     @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
     <div>
         <fieldset>
