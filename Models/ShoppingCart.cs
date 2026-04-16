@@ -1,41 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcMusicStore.Models
 {
     public partial class ShoppingCart
     {
-        private MusicStoreEntities dbContext = new MusicStoreEntities();
+        private readonly MusicStoreEntities _dbContext;
 
-        string ShoppingCartId { get; set; }
+        private ShoppingCart(MusicStoreEntities dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
+        string ShoppingCartId { get; set; } = string.Empty;
 
         public const string CartSessionKey = "CartId";
 
-        public static ShoppingCart GetCart(HttpContextBase context)
+        public static ShoppingCart GetCart(Controller controller)
         {
-            var cart = new ShoppingCart();
-            cart.ShoppingCartId = cart.GetCartId(context);
+            var dbContext = controller.HttpContext.RequestServices.GetRequiredService<MusicStoreEntities>();
+            var cart = new ShoppingCart(dbContext);
+            cart.ShoppingCartId = cart.GetCartId(controller.HttpContext);
             return cart;
         }
 
-        // Helper method to simplify shopping cart calls
-        public static ShoppingCart GetCart(Controller controller)
+        public static ShoppingCart GetCart(HttpContext httpContext, MusicStoreEntities dbContext)
         {
-            return GetCart(controller.HttpContext);
+            var cart = new ShoppingCart(dbContext);
+            cart.ShoppingCartId = cart.GetCartId(httpContext);
+            return cart;
         }
 
         public void AddToCart(Album album)
         {
-            // Get the matching cart and album instances
-            var cartItem = dbContext.Carts.SingleOrDefault(c => c.CartId == ShoppingCartId
-                                                                && c.AlbumId == album.AlbumId);
+            var cartItem = _dbContext.Carts.SingleOrDefault(c => c.CartId == ShoppingCartId && c.AlbumId == album.AlbumId);
 
             if (cartItem == null)
             {
-                // Create a new cart item if no cart item exists
                 cartItem = new Cart
                 {
                     AlbumId = album.AlbumId,
@@ -43,25 +43,19 @@ namespace MvcMusicStore.Models
                     Count = 1,
                     DateCreated = DateTime.Now
                 };
-
-                dbContext.Carts.Add(cartItem);
+                _dbContext.Carts.Add(cartItem);
             }
             else
             {
-                // If the item does exist in the cart, then add one to the quantity
                 cartItem.Count++;
             }
 
-            // Save changes
-            dbContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
         public int RemoveFromCart(int id)
         {
-            // Get the cart
-            var cartItem = dbContext.Carts.Single(
-cart => cart.CartId == ShoppingCartId
-&& cart.RecordId == id);
+            var cartItem = _dbContext.Carts.Single(cart => cart.CartId == ShoppingCartId && cart.RecordId == id);
 
             int itemCount = 0;
 
@@ -74,11 +68,10 @@ cart => cart.CartId == ShoppingCartId
                 }
                 else
                 {
-                    dbContext.Carts.Remove(cartItem);
+                    _dbContext.Carts.Remove(cartItem);
                 }
 
-                // Save changes
-                dbContext.SaveChanges();
+                _dbContext.SaveChanges();
             }
 
             return itemCount;
@@ -86,41 +79,34 @@ cart => cart.CartId == ShoppingCartId
 
         public void EmptyCart()
         {
-            var cartItems = dbContext.Carts.Where(cart => cart.CartId == ShoppingCartId);
+            var cartItems = _dbContext.Carts.Where(cart => cart.CartId == ShoppingCartId);
 
             foreach (var cartItem in cartItems)
             {
-                dbContext.Carts.Remove(cartItem);
+                _dbContext.Carts.Remove(cartItem);
             }
 
-            // Save changes
-            dbContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
 
         public List<Cart> GetCartItems()
         {
-            return dbContext.Carts.Where(cart => cart.CartId == ShoppingCartId).ToList();
+            return _dbContext.Carts.Where(cart => cart.CartId == ShoppingCartId).ToList();
         }
 
         public int GetCount()
         {
-            // Get the count of each item in the cart and sum them up
-            int? count = (from cartItems in dbContext.Carts
+            int? count = (from cartItems in _dbContext.Carts
                           where cartItems.CartId == ShoppingCartId
                           select (int?)cartItems.Count).Sum();
-
-            // Return 0 if all entries are null
             return count ?? 0;
         }
 
         public decimal GetTotal()
         {
-            // Multiply album price by count of that album to get 
-            // the current price for each of those albums in the cart
-            // sum all album price totals to get the cart total
-            decimal? total = (from cartItems in dbContext.Carts
+            decimal? total = (from cartItems in _dbContext.Carts
                               where cartItems.CartId == ShoppingCartId
-                              select (int?)cartItems.Count * cartItems.Album.Price).Sum();
+                              select (int?)cartItems.Count * cartItems.Album!.Price).Sum();
             return total ?? decimal.Zero;
         }
 
@@ -130,70 +116,54 @@ cart => cart.CartId == ShoppingCartId
 
             var cartItems = GetCartItems();
 
-            // Iterate over the items in the cart, adding the order details for each
             foreach (var item in cartItems)
             {
                 var orderDetail = new OrderDetail
                 {
                     AlbumId = item.AlbumId,
                     OrderId = order.OrderId,
-                    UnitPrice = item.Album.Price,
+                    UnitPrice = item.Album!.Price,
                     Quantity = item.Count
                 };
 
-                // Set the order total of the shopping cart
                 orderTotal += (item.Count * item.Album.Price);
-
-                dbContext.OrderDetails.Add(orderDetail);
-
+                _dbContext.OrderDetails.Add(orderDetail);
             }
 
-            // Set the order's total to the orderTotal count
             order.Total = orderTotal;
-
-            // Save the order
-            dbContext.SaveChanges();
-
-            // Empty the shopping cart
+            _dbContext.SaveChanges();
             EmptyCart();
 
-            // Return the OrderId as the confirmation number
             return order.OrderId;
         }
 
-        // We're using HttpContextBase to allow access to cookies.
-        public string GetCartId(HttpContextBase context)
+        public string GetCartId(HttpContext context)
         {
-            if (context.Session[CartSessionKey] == null)
+            if (context.Session.GetString(CartSessionKey) == null)
             {
-                if (!string.IsNullOrWhiteSpace(context.User.Identity.Name))
+                if (!string.IsNullOrWhiteSpace(context.User.Identity?.Name))
                 {
-                    context.Session[CartSessionKey] = context.User.Identity.Name;
+                    context.Session.SetString(CartSessionKey, context.User.Identity.Name);
                 }
                 else
                 {
-                    // Generate a new random GUID using System.Guid class
                     Guid tempCartId = Guid.NewGuid();
-
-                    // Send tempCartId back to client as a cookie
-                    context.Session[CartSessionKey] = tempCartId.ToString();
+                    context.Session.SetString(CartSessionKey, tempCartId.ToString());
                 }
             }
 
-            return context.Session[CartSessionKey].ToString();
+            return context.Session.GetString(CartSessionKey)!;
         }
 
-        // When a user has logged in, migrate their shopping cart to
-        // be associated with their username
         public void MigrateCart(string userName)
         {
-            var shoppingCart = dbContext.Carts.Where(c => c.CartId == ShoppingCartId);
+            var shoppingCart = _dbContext.Carts.Where(c => c.CartId == ShoppingCartId);
 
             foreach (Cart item in shoppingCart)
             {
                 item.CartId = userName;
             }
-            dbContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
     }
 }

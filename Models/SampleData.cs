@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Data.Entity;
-
 namespace MvcMusicStore.Models
 {
-    public class SampleData : DropCreateDatabaseIfModelChanges<MusicStoreEntities>
+    public static class SampleData
     {
-        protected override void Seed(MusicStoreEntities dbContext)
+        public static void Initialize(MusicStoreEntities dbContext)
         {
+            if (dbContext.Genres.Any()) return;
             var genres = new List<Genre>
             {
                 new Genre { Name = "Rock" },
@@ -23,6 +18,7 @@ namespace MvcMusicStore.Models
                 new Genre { Name = "Pop" },
                 new Genre { Name = "Classical" }
             };
+            dbContext.Genres.AddRange(genres);
 
             var artists = new List<Artist>
             {
@@ -176,6 +172,8 @@ namespace MvcMusicStore.Models
                 new Artist { Name = "Yo-Yo Ma" },
                 new Artist { Name = "Zeca Pagodinho" }
             };
+            dbContext.Artists.AddRange(artists);
+            dbContext.SaveChanges();
 
             new List<Album>
             {
@@ -426,6 +424,7 @@ namespace MvcMusicStore.Models
                 new Album { Title = "Bach: The Cello Suites", Genre = genres.Single(g => g.Name == "Classical"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Yo-Yo Ma"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
                 new Album { Title = "Ao Vivo [IMPORT]", Genre = genres.Single(g => g.Name == "Latin"), Price = 8.99M, Artist = artists.Single(a => a.Name == "Zeca Pagodinho"), AlbumArtUrl = "/Content/Images/placeholder.gif" },
             }.ForEach(a => dbContext.Albums.Add(a));
+            dbContext.SaveChanges();
         }
     }
 }
